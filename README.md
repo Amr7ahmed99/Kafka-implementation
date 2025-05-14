@@ -18,13 +18,6 @@ The services communicate through an Apache Kafka topic to simulate message publi
 
 ---
 
-## 📌 Architecture Overview
-+-----------------+ Kafka Broker +-------------------------+
-| Go Producer | ---> my-kafka-topic ---> | Spring Consumer |
-+-----------------+ +------------------+-------------------+
-
----
-
 ## 📂 Project Structure
 
 ### Go Producer (`/kafka`)
@@ -81,23 +74,43 @@ You can use Docker Or install locally from the - [Apache Kafka website](https://
     docker-compose up -d
 ```
 
-2. Create kafka topic
+
+2. Open kafka interactive terminal
 ```bash
-    kafka-topics.sh --create --topic :topic-name --partitions :#partitions --replication-factor :#replications --zookeeper zookeeper:2181
+    docker exec -it kafka /bin/bash
 ```
 
-3. Run the Go Producer
+3. Create kafka topic
+```bash
+    kafka-topics.sh --create --topic :topic-name --partitions :partitions --replication-factor :replications --zookeeper zookeeper:2181
+```
+
+4. Run the Go Producer
 It will start sending messages every second to my-kafka-topic.
 ```bash
     cd path/to/your/go/project
     go run main.go
 ```
 
-4. Run the Spring Boot Consumer
+5. Run the Spring Boot Consumer
 It will listen on the same topic and print out consumed messages.
 ```bash
     cd path/to/your/springboot/project
     ./mvnw spring-boot:run
+```
+
+---
+
+## 📄 How to Run Using Makefile
+
+``` bash
+    make start            # Full setup
+    make kafka-shell      # Open Kafka CLI
+    make start-kafka      # Start Kafka and Zookeeper
+    make create-topic     # Create topic from host
+    make run-producer     # Run only the Go producer
+    make run-consumer     # Run only the Spring Boot consumerc
+    make run-both         # Run both producer and consumer
 ```
 
 ---
