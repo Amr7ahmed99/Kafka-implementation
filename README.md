@@ -19,9 +19,9 @@ The services communicate through an Apache Kafka topic to simulate message publi
 ---
 
 ## 📌 Architecture Overview
-+-----------------+ Kafka Broker +----------------------+
++-----------------+ Kafka Broker +-------------------------+
 | Go Producer | ---> my-kafka-topic ---> | Spring Consumer |
-+-----------------+ +------------------+----------------+
++-----------------+ +------------------+-------------------+
 
 ---
 
@@ -36,10 +36,10 @@ The services communicate through an Apache Kafka topic to simulate message publi
 | Variable       | Default         | Description                         |
 |----------------|-----------------|-------------------------------------|
 | `KAFKA_HOST`   | `localhost:9092`| Kafka broker address                |
-| `KAFKA_TOPIC`  | `maxab-topic`   | Kafka topic to publish messages to |
+| `KAFKA_TOPIC`  | `my-kafka-topic`   | Kafka topic to publish messages to |
 
 
-### ⚙️ Kafka Consumer Configuration (Spring Boot)
+### Spring Boot Consumer
 
 - `KafkaConsumerService.java`: Consumes messages dynamically from Kafka.
 - `KafkaSettingsService.java`: Injects Kafka topic and group ID from properties.
@@ -81,14 +81,19 @@ You can use Docker Or install locally from the - [Apache Kafka website](https://
     docker-compose up -d
 ```
 
-2. Run the Go Producer
+2. Create kafka topic
+```bash
+    kafka-topics.sh --create --topic :topic-name --partitions :#partitions --replication-factor :#replications --zookeeper zookeeper:2181
+```
+
+3. Run the Go Producer
 It will start sending messages every second to my-kafka-topic.
 ```bash
     cd path/to/your/go/project
     go run main.go
 ```
 
-2. Run the Spring Boot Consumer
+4. Run the Spring Boot Consumer
 It will listen on the same topic and print out consumed messages.
 ```bash
     cd path/to/your/springboot/project
@@ -101,13 +106,13 @@ It will listen on the same topic and print out consumed messages.
 
 ### Producer:
 ``` bash
-    📤 Starting message publishing to topic: maxab-topic
+    📤 Starting message publishing to topic: my-kafka-topic
     ✅ Sent message #0 to partition 0 at offset 1
 ```
 
 ### Consumer:
 ``` bash
-    📥 [Group: maxab-group] Consumed 'message #0' from partition 0 @ offset 1 at 12:45:03.456
+    📥 [Group: my-kafka-group] Consumed 'message #0' from partition 0 @ offset 1 at 12:45:03.456
 ```
 
 ---
